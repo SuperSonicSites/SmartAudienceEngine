@@ -34,10 +34,19 @@ smart-audience-engine/
  * Text Domain: smart-audience-engine
  */
 
- // Exit if accessed directly
- if ( ! defined( 'ABSPATH' ) ) {
-     exit;
- }
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
+/**
+ * Set the GTM container ID via constant or filter.
+ * Define `SAE_GTM_ID` in `wp-config.php` or use the `sae_gtm_id` filter to override.
+ * When printing the ID, always escape it (e.g., with `esc_attr()`).
+ */
+if ( ! defined( 'SAE_GTM_ID' ) ) {
+    define( 'SAE_GTM_ID', 'GTM-P6LVXLBZ' );
+}
 ```
 
 ---
@@ -51,6 +60,7 @@ smart-audience-engine/
 ```php
 add_action( 'wp_head', 'sae_insert_gtm_head', 1 );
 function sae_insert_gtm_head() {
+    $gtm_id = esc_attr( apply_filters( 'sae_gtm_id', SAE_GTM_ID ) );
     ?>
     <!-- Google Tag Manager -->
     <script>
@@ -58,30 +68,30 @@ function sae_insert_gtm_head() {
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
     j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-P6LVXLBZ');
+    })(window,document,'script','dataLayer','<?php echo $gtm_id; ?>');
     </script>
     <!-- End Google Tag Manager -->
     <?php
 }
 ```
 
-> **Note**: Replace `GTM-P6LVXLBZ` with your actual GTM Container ID.
-
 ---
 
 ### 5. Hooking GTM `<noscript>` into `<body>`
 
-1. **Action**: `wp_body_open` (for themes supporting it)
-
-   * If the theme lacks `wp_body_open`, fallback to `wp_footer` at priority `0`.
+1. **Action**: `wp_body_open` (falls back to `wp_footer` if unavailable)
 
 ```php
-add_action( 'wp_body_open', 'sae_insert_gtm_body', 1 );
+if ( function_exists( 'wp_body_open' ) ) {
+    add_action( 'wp_body_open', 'sae_insert_gtm_body', 1 );
+} else {
+    add_action( 'wp_footer', 'sae_insert_gtm_body', 0 ); // Fallback for older themes
+}
 function sae_insert_gtm_body() {
     ?>
     <!-- Google Tag Manager (noscript) -->
     <noscript>
-      <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P6LVXLBZ"
+      <iframe src="https://www.googletagmanager.com/ns.html?id=<?php echo esc_attr( apply_filters( 'sae_gtm_id', SAE_GTM_ID ) ); ?>"
               height="0" width="0" style="display:none;visibility:hidden">
       </iframe>
     </noscript>
@@ -89,12 +99,6 @@ function sae_insert_gtm_body() {
     <?php
 }
 ```
-
-> **Fallback** (if no `wp_body_open`):
->
-> ```php
-> add_action( 'wp_footer', 'sae_insert_gtm_body', 0 );
-> ```
 
 ---
 
@@ -117,7 +121,6 @@ function sae_insert_gtm_body() {
 ### 8. (Optional) Future Enhancements
 
 * Add version check and auto-update hooks.
-* Integrate Admin Notices if GTM ID is missing or invalid.
 * Support alternative CMS by abstracting the injection points.
 
 ---
