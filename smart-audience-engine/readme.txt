@@ -7,4 +7,4 @@ Stable tag: 1.0.0
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
-A zero-configuration plugin that injects your Google Tag Manager container into every page.
+A zero-configuration plugin that super-charge your ads.

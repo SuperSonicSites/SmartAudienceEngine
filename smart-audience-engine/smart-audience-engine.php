@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * When printing the ID, always escape it (e.g., with `esc_attr()`).
  */
 if ( ! defined( 'SAE_GTM_ID' ) ) {
-    define( 'SAE_GTM_ID', 'GTM-TQR9W2M2' );
+    define( 'SAE_GTM_ID', 'GTM-P6LVXLBZ' );
 }
 
 add_action( 'wp_head', 'sae_insert_gtm_head', 1 );
