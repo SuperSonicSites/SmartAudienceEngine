@@ -1,9 +1,9 @@
 <?php
 /**
  * Plugin Name: Smart Audience Engine
- * Description: Automatically adds your GTM container to every page. Zero setup required.
+ * Description: A zero-configuration plugin that super-charge your ads.
  * Version:     1.0.0
- * Author:      Your Agency Name
+ * Author:      Supersonic Realtors
  * Text Domain: smart-audience-engine
  */
 
